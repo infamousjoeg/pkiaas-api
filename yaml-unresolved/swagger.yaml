@@ -500,7 +500,6 @@ paths:
             application/json:
               schema:
                 properties:
-                  ### ROB:  NEED MORE DETAILS ON THIS OBJECT
                   templateObject:
                     type: string
 ########################
