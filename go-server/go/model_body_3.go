@@ -22,4 +22,6 @@ type Body3 struct {
 	Subject string `json:"subject,omitempty"`
 
 	AltNames []string `json:"altNames,omitempty"`
+
+	SelfSigned bool `json:"selfSigned,omitempty"`
 }
