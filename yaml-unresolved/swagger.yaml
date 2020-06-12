@@ -306,6 +306,9 @@ paths:
                   items:
                       type: string
                       example: DNS:subdomain2.example.com
+                selfSigned:
+                  type: boolean
+                  example: true
 ########################
 # /set
 ########################
