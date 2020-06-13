@@ -13,10 +13,6 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
-  - name: authentication
-    description: Operations available for authentication
-  - name: config
-    description: Operations available to configure CyberArk PKIaaS to CyberArk DAP/Conjur
   - name: certificate
     description: Operations available on certificates
   - name: ca
@@ -38,6 +34,8 @@ paths:
       summary: Signs an existing certificate.
       operationId: signCertificate
       description: Evaluates and verifies a Certificate Signing Request (CSR) and returns the signed certificate and CA certificate.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unexpected error
@@ -78,6 +76,7 @@ paths:
                   example: 3600
                 returnFormat:
                   type: string
+                  example: pem
 ########################
 # /create
 ########################
@@ -88,6 +87,8 @@ paths:
       summary: Creates a signed certificate and private key.
       operationId: createCertificate
       description: Evaluates and verifies a certificate template and returns the newly created and signed certificate, private key, and CA certificate.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unexpected error
@@ -104,10 +105,11 @@ paths:
                   templateName:
                     type: string
                   timeToLive:
-                    type: string
+                    type: integer
                     example: 3600
                   returnFormat:
                     type: string
+                    example: pem
       requestBody:
         content:
           application/json:
@@ -135,6 +137,8 @@ paths:
       summary: Returns the certificate that matches the given serial number.
       operationId: getCertificate
       description: Evaluates and matches a given certificate serial number and returns the signed certificate.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unexpected error
@@ -157,6 +161,8 @@ paths:
       summary: Returns an array of all certificate serial numbers.
       operationId: listCertificates
       description: Returns an array of all certificate serial numbers present in the certificate store.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unexpected error
@@ -174,20 +180,36 @@ paths:
 ########################
 # /revoke/{serialNumber}
 ########################
-  /certificate/revoke/{serialNumber}:
+  /certificate/revoke:
     post:
-      parameters:
-        - $ref: '#/components/parameters/serialNumberParam'
       tags:
         - certificate
       summary: Revokes a certificate matching given serial number.
       operationId: revokeCertificate
       description: Revokes a certificate matching a given serial number and updates the Certificate Revokation List (CRL).
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unexpected error
         '200':
           description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                serialNumber:
+                  type: string
+                  example: '10:1e:22:6f:8a:b3:a7:3b:ae:4a:93:62:32:8e:0f:e6:6b'
+                reason:
+                  type: string
+                  example: keyCompromise
+                timeToLive:
+                  type: string
+                  example: 3600
+                returnFormat:
+                  type: string
 ########################
 # /purge
 ########################
@@ -198,6 +220,8 @@ paths:
       summary: Purges all certificates expired prior to the date provided.
       operationId: purgeCertificates
       description: Purges all certificates expired prior to the date provided from the certificate store and Certificate Revocation List (CRL).
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unexpected error
@@ -270,6 +294,8 @@ paths:
       summary: Generates and returns an intermediate CA CSR.
       operationId: generateIntermediateCACSR
       description: Generates and returns an intermediate CA certificate signing request.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -290,7 +316,7 @@ paths:
                 commonName:
                   type: string
                   example: subdomain.example.com
-                keyAlgorithm:
+                keyAlgo:
                   type: string
                   example: ECDSA
                 keyBits:
@@ -319,6 +345,8 @@ paths:
       summary: Sets the signed intermediate CA certificate.
       operationId: setIntermediateCA
       description: Sets the signed intermediate CA certificate.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -341,6 +369,8 @@ paths:
       summary: Sets the CA certificate chain.
       operationId: setCAChain
       description: Sets the CA certificate chain.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -369,6 +399,8 @@ paths:
       summary: Returns CRL information.
       operationId: getCRL
       description: Returns the number of entries in CRL, the CRL record in an array.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -407,6 +439,8 @@ paths:
       summary: Purges all records prior to the date provided from the CRL.
       operationId: purgeCRL
       description: Purges all records prior to the date provided from the Certificate Revocation List (CRL).
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -435,6 +469,8 @@ paths:
       summary: Create a template to generate or sign a certificate from.
       operationId: createTemplate
       description: Creates a template that can be used to generate or sign a certificate.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -455,6 +491,8 @@ paths:
       summary: Modify an existing template to generate or sign a certificate from.
       operationId: manageTemplate
       description: Modify an existing template that can be used to generate or sign a certificate.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -477,6 +515,8 @@ paths:
       summary: Deletes the template name that is given.
       operationId: deleteTemplate
       description: Matches the template name given with the database and deletes the template.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -494,6 +534,8 @@ paths:
       summary: Returns the given template name's details.
       operationId: getTemplate
       description: Returns the given template name's details.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -515,6 +557,8 @@ paths:
       summary: Returns all templates in an object array.
       operationId: listTemplates
       description: Returns all templates in an object array.
+      security:
+        - DAPTokenAuth: []
       responses:
         default:
           description: Unknown error
@@ -627,3 +671,8 @@ components:
       required: true
       schema:
         type: string
+  securitySchemes:
+      DAPTokenAuth:
+        type: apiKey
+        in: header
+        name: Authorization
