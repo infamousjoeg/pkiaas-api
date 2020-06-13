@@ -15,7 +15,7 @@ type InlineResponse201 struct {
 
 	TemplateName string `json:"templateName,omitempty"`
 
-	TimeToLive string `json:"timeToLive,omitempty"`
+	TimeToLive int32 `json:"timeToLive,omitempty"`
 
 	ReturnFormat string `json:"returnFormat,omitempty"`
 }

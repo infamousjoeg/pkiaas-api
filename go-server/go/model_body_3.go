@@ -11,17 +11,5 @@ package swagger
 
 type Body3 struct {
 
-	CommonName string `json:"commonName,omitempty"`
-
-	KeyAlgorithm string `json:"keyAlgorithm,omitempty"`
-
-	KeyBits string `json:"keyBits,omitempty"`
-
-	TimeToLive string `json:"timeToLive,omitempty"`
-
-	Subject string `json:"subject,omitempty"`
-
-	AltNames []string `json:"altNames,omitempty"`
-
-	SelfSigned bool `json:"selfSigned,omitempty"`
+	TimeBuffer string `json:"timeBuffer,omitempty"`
 }

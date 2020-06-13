@@ -11,5 +11,5 @@ package swagger
 
 type Body5 struct {
 
-	CertificateBundle string `json:"certificateBundle,omitempty"`
+	Certificate string `json:"certificate,omitempty"`
 }

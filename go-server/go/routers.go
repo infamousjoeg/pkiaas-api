@@ -121,7 +121,7 @@ var routes = Routes{
 	Route{
 		"RevokeCertificate",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/certificate/revoke/{serialNumber}",
+		"/CyberArk_AAM_SME/PKIaaS/1.0.0/certificate/revoke",
 		RevokeCertificate,
 	},
 

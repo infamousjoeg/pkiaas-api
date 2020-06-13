@@ -11,5 +11,5 @@ package swagger
 
 type Body6 struct {
 
-	TimeBuffer string `json:"timeBuffer,omitempty"`
+	CertificateBundle string `json:"certificateBundle,omitempty"`
 }

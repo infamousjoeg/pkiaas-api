@@ -9,13 +9,7 @@
  */
 package swagger
 
-type Body2 struct {
+type Body7 struct {
 
-	SerialNumber string `json:"serialNumber,omitempty"`
-
-	Reason string `json:"reason,omitempty"`
-
-	TimeToLive string `json:"timeToLive,omitempty"`
-
-	ReturnFormat string `json:"returnFormat,omitempty"`
+	TimeBuffer string `json:"timeBuffer,omitempty"`
 }

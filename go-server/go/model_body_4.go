@@ -11,5 +11,17 @@ package swagger
 
 type Body4 struct {
 
-	Certificate string `json:"certificate,omitempty"`
+	CommonName string `json:"commonName,omitempty"`
+
+	KeyAlgo string `json:"keyAlgo,omitempty"`
+
+	KeyBits string `json:"keyBits,omitempty"`
+
+	TimeToLive string `json:"timeToLive,omitempty"`
+
+	Subject string `json:"subject,omitempty"`
+
+	AltNames []string `json:"altNames,omitempty"`
+
+	SelfSigned bool `json:"selfSigned,omitempty"`
 }
