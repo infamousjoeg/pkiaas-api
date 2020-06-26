@@ -1,8 +1,4 @@
 openapi: 3.0.0
-# Added by API Auto Mocking Plugin
-servers:
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/CyberArk_AAM_SME/PKIaaS/1.0.0
 info:
   description: API for CyberArk's Public-Key Infrastructure (PKI)-as-a-Service
   version: "1.0.2"
@@ -58,6 +54,16 @@ paths:
                     example: 3600
                   returnFormat:
                     type: string
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
       requestBody:
         content:
           application/json:
@@ -110,6 +116,16 @@ paths:
                   returnFormat:
                     type: string
                     example: pem
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
       requestBody:
         content:
           application/json:
@@ -151,6 +167,12 @@ paths:
                 properties:
                   certificate:
                     type: string
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 ########################
 # /certificates
 ########################
@@ -177,6 +199,12 @@ paths:
                     properties:
                       serialNumber:
                         type: string
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 ########################
 # /revoke/{serialNumber}
 ########################
@@ -194,6 +222,16 @@ paths:
           description: Unexpected error
         '200':
           description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
       requestBody:
         content:
           application/json:
@@ -213,7 +251,7 @@ paths:
 ########################
 # /purge
 ########################
-  /purge/:
+  /purge:
     post:
       tags:
         - certificate
@@ -227,6 +265,10 @@ paths:
           description: Unexpected error
         '200':
           description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       requestBody:
         content:
           application/json:
@@ -262,6 +304,10 @@ paths:
                 properties:
                   caCertificate:
                     type: string
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 ########################
 # /chain
 ########################
@@ -284,6 +330,12 @@ paths:
                 properties:
                   caCertificateChain:
                     type: string
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 ########################
 # /generate
 ########################
@@ -308,6 +360,16 @@ paths:
                 properties:
                   intermediateCACSR:
                     type: string
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
       requestBody:
         content:
           application/json:
@@ -352,6 +414,16 @@ paths:
           description: Unknown error
         '200':
           description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
       requestBody:
         content:
           application/json:
@@ -376,6 +448,16 @@ paths:
           description: Unknown error
         '200':
           description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
       requestBody:
         content:
           application/json:
@@ -429,6 +511,10 @@ paths:
                             properties:
                               extension:
                                 type: string
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 ########################
 # /crl/purge
 ########################
@@ -446,6 +532,10 @@ paths:
           description: Unknown error
         '200':
           description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       requestBody:
         content:
           application/json:
@@ -476,6 +566,16 @@ paths:
           description: Unknown error
         '201':
           description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
       requestBody:
         content:
           application/json:
@@ -498,6 +598,14 @@ paths:
           description: Unknown error
         '200':
           description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
       requestBody:
         content:
           application/json:
@@ -522,6 +630,12 @@ paths:
           description: Unknown error
         '200':
           description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
 ########################
 # /{templateName}
 ########################
@@ -547,6 +661,14 @@ paths:
                 properties:
                   templateObject:
                     type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 ########################
 # /templates
 ########################
@@ -570,6 +692,14 @@ paths:
                 type: array
                 items:
                   type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
 ########################
 # END /template/
 ########################
