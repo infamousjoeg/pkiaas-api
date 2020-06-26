@@ -51,133 +51,133 @@ var routes = Routes{
 	Route{
 		"Index",
 		"GET",
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/",
+		"/",
 		Index,
 	},
 
 	Route{
 		"GenerateIntermediateCACSR",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/ca/generate",
+		"/ca/generate",
 		GenerateIntermediateCACSR,
 	},
 
 	Route{
 		"GetCA",
 		strings.ToUpper("Get"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/ca/certificate",
+		"/ca/certificate",
 		GetCA,
 	},
 
 	Route{
 		"GetCAChain",
 		strings.ToUpper("Get"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/ca/chain",
+		"/ca/chain",
 		GetCAChain,
 	},
 
 	Route{
 		"SetCAChain",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/ca/chain/set",
+		"/ca/chain/set",
 		SetCAChain,
 	},
 
 	Route{
 		"SetIntermediateCA",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/ca/set",
+		"/ca/set",
 		SetIntermediateCA,
 	},
 
 	Route{
 		"CreateCertificate",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/certificate/create",
+		"/certificate/create",
 		CreateCertificate,
 	},
 
 	Route{
 		"GetCertificate",
 		strings.ToUpper("Get"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/certificate/{serialNumber}",
+		"/certificate/{serialNumber}",
 		GetCertificate,
 	},
 
 	Route{
 		"ListCertificates",
 		strings.ToUpper("Get"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/certificates",
+		"/certificates",
 		ListCertificates,
 	},
 
 	Route{
 		"PurgeCertificates",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/purge/",
+		"/purge",
 		PurgeCertificates,
 	},
 
 	Route{
 		"RevokeCertificate",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/certificate/revoke",
+		"/certificate/revoke",
 		RevokeCertificate,
 	},
 
 	Route{
 		"SignCertificate",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/certificate/sign",
+		"/certificate/sign",
 		SignCertificate,
 	},
 
 	Route{
 		"GetCRL",
 		strings.ToUpper("Get"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/crl",
+		"/crl",
 		GetCRL,
 	},
 
 	Route{
 		"PurgeCRL",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/crl/purge",
+		"/crl/purge",
 		PurgeCRL,
 	},
 
 	Route{
 		"CreateTemplate",
 		strings.ToUpper("Post"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/template/create",
+		"/template/create",
 		CreateTemplate,
 	},
 
 	Route{
 		"DeleteTemplate",
 		strings.ToUpper("Delete"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/template/delete/{templateName}",
+		"/template/delete/{templateName}",
 		DeleteTemplate,
 	},
 
 	Route{
 		"GetTemplate",
 		strings.ToUpper("Get"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/template/{templateName}",
+		"/template/{templateName}",
 		GetTemplate,
 	},
 
 	Route{
 		"ListTemplates",
 		strings.ToUpper("Get"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/templates",
+		"/templates",
 		ListTemplates,
 	},
 
 	Route{
 		"ManageTemplate",
 		strings.ToUpper("Put"),
-		"/CyberArk_AAM_SME/PKIaaS/1.0.0/template/manage",
+		"/template/manage",
 		ManageTemplate,
 	},
 }
