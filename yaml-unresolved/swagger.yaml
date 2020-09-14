@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: API for CyberArk's Public-Key Infrastructure (PKI)-as-a-Service
-  version: "1.0.2"
+  version: 1.0.4
   title: CyberArk PKIaaS API
   contact:
     email: joe.garcia@cyberark.com
@@ -19,11 +19,9 @@ tags:
     description: Operations available on certificate templates
 paths:
 ########################
-# BEGIN /certificate/
+# BEGIN certificate
 ########################
-# /sign
-########################
-  /certificate/sign:
+  /pki/certificate/sign:
     post:
       tags:
         - certificate
@@ -42,17 +40,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  commonName:
+                  certificate:
                     type: string
-                    example: subdomain.example.com
-                  csr:
+                  privateKey:
                     type: string
-                  templateName:
+                  caCertificate:
                     type: string
-                  timeToLive:
+                  serialNumber:
                     type: string
-                    example: 3600
-                  returnFormat:
+                  leaseDuration:
                     type: string
         '400':
           description: Bad Request
@@ -74,24 +70,18 @@ paths:
                   example: subdomain.example.com
                 templateName:
                   type: string
-                emailAddress:
-                  type: string
-                  example: user@example.com
-                timeToLive:
-                  type: string
+                ttl:
+                  type: integer
                   example: 3600
                 returnFormat:
                   type: string
                   example: pem
-########################
-# /create
-########################
-  /certificate/create:
+  /pki/certificate/create:
     post:
       tags:
         - certificate
       summary: Creates a signed certificate and private key.
-      operationId: createCertificate
+      operationId: createPKICertificate
       description: Evaluates and verifies a certificate template and returns the newly created and signed certificate, private key, and CA certificate.
       security:
         - DAPTokenAuth: []
@@ -105,17 +95,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  commonName:
+                  certificate:
                     type: string
-                    example: subdomain.example.com
-                  templateName:
+                  privateKey:
                     type: string
-                  timeToLive:
-                    type: integer
-                    example: 3600
-                  returnFormat:
+                  caCertificate:
                     type: string
-                    example: pem
+                  serialNumber:
+                    type: string
+                  leaseDuration:
+                    type: string
         '400':
           description: Bad Request
         '401':
@@ -136,15 +125,16 @@ paths:
                   example: subdomain.example.com
                 templateName:
                   type: string
-                timeToLive:
-                  type: string
+                ttl:
+                  type: integer
                   example: 3600
+                altNames:
+                  type: array
+                  items:
+                    type: string
                 returnFormat:
                   type: string
-########################
-# /{serialNumber}
-########################
-  /certificate/{serialNumber}:
+  /pki/certificate/{serialNumber}:
     get:
       parameters:
         - $ref: '#/components/parameters/serialNumberParam'
@@ -173,10 +163,7 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-########################
-# /certificates
-########################
-  /certificates:
+  /pki/certificates:
     get:
       tags:
         - certificate
@@ -205,10 +192,7 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-########################
-# /revoke/{serialNumber}
-########################
-  /certificate/revoke:
+  /pki/certificate/revoke:
     post:
       tags:
         - certificate
@@ -243,15 +227,7 @@ paths:
                 reason:
                   type: string
                   example: keyCompromise
-                timeToLive:
-                  type: string
-                  example: 3600
-                returnFormat:
-                  type: string
-########################
-# /purge
-########################
-  /purge:
+  /pki/purge:
     post:
       tags:
         - certificate
@@ -276,14 +252,79 @@ paths:
               properties:
                 timeBuffer:
                   type: string
+  /ssh/certificate/create:
+    post:
+      tags:
+        - certificate
+      summary: Creates a signed public SSH key certificate.
+      operationId: createSSHCertificate
+      description: Evaluates and verifies a certificate template and returns the newly created and signed public SSH key certificate.
+      security:
+        - DAPTokenAuth: []
+      responses:
+        default:
+          description: Unexpected error
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  serialNumber:
+                    type: string
+                  signedCertificate:
+                    type: string
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                templateName:
+                  type: string
+                publicKey:
+                  type: string
+                users:
+                  type: array
+                  items:
+                    type: string
+                domains:
+                  type: array
+                  items:
+                    type: string
+                ttl:
+                  type: integer
+                  example: 3600
+                keyId:
+                  type: string
+                criticalOptions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      option:
+                        type: string
+                      value:
+                        type: string
+                extensions:
+                  type: array
+                  items:
+                    type: string
 ########################
-# END /certificate/
+# END certificate
 ########################
 ########################
-# BEGIN /ca/
-########################
-########################
-# /certificate
+# BEGIN ca
 ########################
   /ca/certificate:
     get:
@@ -308,9 +349,6 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-########################
-# /chain
-########################
   /ca/chain:
     get:
       tags:
@@ -328,7 +366,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  caCertificateChain:
+                  certBundle:
                     type: string
         '400':
           description: Bad Request
@@ -336,9 +374,6 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-########################
-# /generate
-########################
   /ca/generate:
     post:
       tags:
@@ -358,7 +393,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  intermediateCACSR:
+                  csr:
+                    type: string
+                  selfSignedCert:
                     type: string
         '400':
           description: Bad Request
@@ -384,11 +421,27 @@ paths:
                 keyBits:
                   type: string
                   example: 4096
-                timeToLive:
-                  type: string
+                maxTTL:
+                  type: integer
                   example: 3600
                 subject:
-                  type: string
+                  type: object
+                  items:
+                    properties:
+                      organization:
+                        type: string
+                      orgUnit:
+                        type: string
+                      country:
+                        type: string
+                      locality:
+                        type: string
+                      province:
+                        type: string
+                      address:
+                        type: string
+                      postalCode:
+                        type: string
                 altNames:
                   type: array
                   items:
@@ -397,9 +450,6 @@ paths:
                 selfSigned:
                   type: boolean
                   example: true
-########################
-# /set
-########################
   /ca/set:
     post:
       tags:
@@ -431,9 +481,6 @@ paths:
               properties:
                 certificate:
                   type: string
-########################
-# /chain/set
-########################
   /ca/chain/set:
     post:
       tags:
@@ -466,15 +513,12 @@ paths:
                 certificateBundle:
                   type: string
 ########################
-# END /ca/
+# END ca
 ########################
 ########################
-# BEGIN /crl/
+# BEGIN crl
 ########################
-########################
-# /crl
-########################
-  /crl:
+  /pki/crl:
     get:
       tags:
         - crl
@@ -515,10 +559,7 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-########################
-# /crl/purge
-########################
-  /crl/purge:
+  /pki/crl/purge:
     post:
       tags:
         - crl
@@ -544,20 +585,17 @@ paths:
                 timeBuffer:
                   type: string
 ########################
-# END /crl/
+# END crl
 ########################
 ########################
-# BEGIN /template/
+# BEGIN template
 ########################
-########################
-# /create
-########################
-  /template/create:
+  /pki/template:
     post:
       tags:
         - template
       summary: Create a template to generate or sign a certificate from.
-      operationId: createTemplate
+      operationId: createPKITemplate
       description: Creates a template that can be used to generate or sign a certificate.
       security:
         - DAPTokenAuth: []
@@ -580,16 +618,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TemplateRequest'
-########################
-# /manage
-########################
-  /template/manage:
+              $ref: '#/components/schemas/PKITemplateRequest'
     put:
       tags:
         - template
       summary: Modify an existing template to generate or sign a certificate from.
-      operationId: manageTemplate
+      operationId: managePKITemplate
       description: Modify an existing template that can be used to generate or sign a certificate.
       security:
         - DAPTokenAuth: []
@@ -610,18 +644,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TemplateRequest'
-########################
-# /delete/{templateName}
-########################
-  /template/delete/{templateName}:
+              $ref: '#/components/schemas/PKITemplateRequest'
+  /pki/template/{templateName}:
     delete:
       parameters:
         - $ref: '#/components/parameters/templateNameParam'
       tags:
         - template
       summary: Deletes the template name that is given.
-      operationId: deleteTemplate
+      operationId: deletePKITemplate
       description: Matches the template name given with the database and deletes the template.
       security:
         - DAPTokenAuth: []
@@ -636,17 +667,13 @@ paths:
           description: Forbidden
         '500':
           description: Internal Server Error
-########################
-# /{templateName}
-########################
-  /template/{templateName}:
     get:
       parameters:
         - $ref: '#/components/parameters/templateNameParam'
       tags:
         - template
       summary: Returns the given template name's details.
-      operationId: getTemplate
+      operationId: getPKITemplate
       description: Returns the given template name's details.
       security:
         - DAPTokenAuth: []
@@ -669,15 +696,12 @@ paths:
           description: Not Found
         '500':
           description: Internal Server Error
-########################
-# /templates
-########################
-  /templates:
+  /pki/templates:
     get:
       tags:
         - template
       summary: Returns all templates in an object array.
-      operationId: listTemplates
+      operationId: listPKITemplates
       description: Returns all templates in an object array.
       security:
         - DAPTokenAuth: []
@@ -689,9 +713,147 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
+                properties:
+                  templates:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /ssh/template:
+    post:
+      tags:
+        - template
+      summary: Create a template to sign a public SSH key certificate from.
+      operationId: createSSHTemplate
+      description: Creates a template that can be used to sign a public SSH key certificate.
+      security:
+        - DAPTokenAuth: []
+      responses:
+        default:
+          description: Unknown error
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+        '500':
+          description: Internal Server Error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SSHTemplateRequest'
+    put:
+      tags:
+        - template
+      summary: Modify an existing template to sign a public SSH key certificate from.
+      operationId: manageSSHTemplate
+      description: Modify an existing template that can be used to sign a public SSH key certificate.
+      security:
+        - DAPTokenAuth: []
+      responses:
+        default:
+          description: Unknown error
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '415':
+          description: Unsupported Media Type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SSHTemplateRequest'
+  /ssh/template/{templateName}:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/templateNameParam'
+      tags:
+        - template
+      summary: Deletes the template name that is given.
+      operationId: deleteSSHTemplate
+      description: Matches the template name given with the database and deletes the template.
+      security:
+        - DAPTokenAuth: []
+      responses:
+        default:
+          description: Unknown error
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+    get:
+      parameters:
+        - $ref: '#/components/parameters/templateNameParam'
+      tags:
+        - template
+      summary: Returns the given template name's details.
+      operationId: getSSHTemplate
+      description: Returns the given template name's details.
+      security:
+        - DAPTokenAuth: []
+      responses:
+        default:
+          description: Unknown error
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  templateObject:
+                    type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /ssh/templates:
+    get:
+      tags:
+        - template
+      summary: Returns all templates in an object array.
+      operationId: listSSHTemplates
+      description: Returns all templates in an object array.
+      security:
+        - DAPTokenAuth: []
+      responses:
+        default:
+          description: Unknown error
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  templates:
+                    type: array
+                    items:
+                      type: string
         '401':
           description: Unauthorized
         '403':
@@ -701,88 +863,137 @@ paths:
         '500':
           description: Internal Server Error
 ########################
-# END /template/
+# END template
 ########################
 components:
   schemas:
-    TemplateRequest:
+    PKITemplateRequest:
       required:
         - templateName
-        - keyAlgorithm
+        - keyAlgo
         - keyBits
-        - timeToLive
-        - organization
-        - country
-        - locality
-        - keyUsage
-        - policyIdentifiers
+        - maxTTL
+        - subject
+        - storeCertificate
       properties:
         templateName:
           type: string
-        keyAlgorithm:
+        keyAlgo:
           type: string
         keyBits:
           type: string
-        timeToLive:
-          type: string
+        maxTTL:
+          type: integer
           example: 3600
-        organization:
-          type: string
-        organizationalUnit:
-          type: string
-        country:
-          type: string
-        locality:
-          type: string
-        province:
-          type: string
-        streetAddress:
-          type: string
-        postalCode:
-          type: string
-        altNames:
+        subject:
+          type: object
+          items:
+            properties:
+              organization:
+                type: string
+              orgUnit:
+                type: string
+              country:
+                type: string
+              locality:
+                type: string
+              province:
+                type: string
+              address:
+                type: string
+              postalCode:
+                type: string
+        storeCertificate:
+          type: boolean
+        keyUsages:
           type: array
           items:
             type: string
-        keyUsage:
+        extKeyUsages:
           type: array
           items:
             type: string
-        maxPathLength:
-          type: string
-        permittedDNS:
+        validateCNHostname:
+          type: boolean
+        permitLocalhostCN:
+          type: boolean
+        permitWildcardCN:
+          type: boolean
+        permitRootDomain:
+          type: boolean
+        permitSubdomainCN:
+          type: boolean
+        allowedCNDomains:
           type: array
           items:
             type: string
-        excludedDNS:
+        permDNSDomains:
           type: array
           items:
             type: string
-        permittedIP:
+        exclDNSDomains:
           type: array
           items:
             type: string
-        excludedIP:
+        permIPRanges:
           type: array
           items:
             type: string
-        permittedEmail:
+        exclIPRanges:
           type: array
           items:
             type: string
-        excludedEmail:
+        permEmails:
           type: array
           items:
             type: string
-        permittedURL:
+        exclEmails:
           type: array
           items:
             type: string
-        excludedURL:
+        permURIDomains:
+          type: array
+          items:
+            type: string
+        exclURIDomains:
           type: array
           items:
             type: string
         policyIdentifiers:
+          type: array
+          items:
+            type: string
+    SSHTemplateRequest:
+      required:
+        - templateName
+        - certType
+        - maxTTL
+      properties:
+        templateName:
+          type: string
+        certType:
+          type: string
+        maxTTL:
+          type: integer
+          example: 3600
+        allowedHosts:
+          type: array
+          items:
+            type: string
+        allowedPrincipals:
+          type: array
+          items:
+            type: string
+        permittedCriticalOptions:
+          type: array
+          items:
+            type: object
+            properties:
+              option:
+                type: string
+              value:
+                type: string
+        permittedExtensions:
           type: array
           items:
             type: string
@@ -797,7 +1008,7 @@ components:
     templateNameParam:
       name: templateName
       in: path
-      description: The name of the template to delete.
+      description: The name of the template.
       required: true
       schema:
         type: string
