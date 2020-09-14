@@ -1,0 +1,1106 @@
+openapi: 3.0.0
+info:
+  title: CyberArk PKIaaS API
+  description: API for CyberArk's Public-Key Infrastructure (PKI)-as-a-Service
+  contact:
+    email: joe.garcia@cyberark.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.4
+servers:
+- url: /
+tags:
+- name: certificate
+  description: Operations available on certificates
+- name: ca
+  description: Operations available on certificate authorities
+- name: crl
+  description: Operations available on certificate revocation lists
+- name: template
+  description: Operations available on certificate templates
+paths:
+  /pki/certificate/sign:
+    post:
+      tags:
+      - certificate
+      summary: Signs an existing certificate.
+      description: Evaluates and verifies a Certificate Signing Request (CSR) and
+        returns the signed certificate and CA certificate.
+      operationId: signCertificate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+      responses:
+        default:
+          description: Unexpected error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/certificate/create:
+    post:
+      tags:
+      - certificate
+      summary: Creates a signed certificate and private key.
+      description: Evaluates and verifies a certificate template and returns the newly
+        created and signed certificate, private key, and CA certificate.
+      operationId: createPKICertificate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_1'
+      responses:
+        default:
+          description: Unexpected error
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/certificate/{serialNumber}:
+    get:
+      tags:
+      - certificate
+      summary: Returns the certificate that matches the given serial number.
+      description: Evaluates and matches a given certificate serial number and returns
+        the signed certificate.
+      operationId: getCertificate
+      parameters:
+      - name: serialNumber
+        in: path
+        description: Serial number of certificate.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: Unexpected error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/certificates:
+    get:
+      tags:
+      - certificate
+      summary: Returns an array of all certificate serial numbers.
+      description: Returns an array of all certificate serial numbers present in the
+        certificate store.
+      operationId: listCertificates
+      responses:
+        default:
+          description: Unexpected error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_2'
+                x-content-type: application/json
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/certificate/revoke:
+    post:
+      tags:
+      - certificate
+      summary: Revokes a certificate matching given serial number.
+      description: Revokes a certificate matching a given serial number and updates
+        the Certificate Revokation List (CRL).
+      operationId: revokeCertificate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+      responses:
+        default:
+          description: Unexpected error
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/purge:
+    post:
+      tags:
+      - certificate
+      summary: Purges all certificates expired prior to the date provided.
+      description: Purges all certificates expired prior to the date provided from
+        the certificate store and Certificate Revocation List (CRL).
+      operationId: purgeCertificates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_3'
+      responses:
+        default:
+          description: Unexpected error
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+      security:
+      - DAPTokenAuth: []
+  /ssh/certificate/create:
+    post:
+      tags:
+      - certificate
+      summary: Creates a signed public SSH key certificate.
+      description: Evaluates and verifies a certificate template and returns the newly
+        created and signed public SSH key certificate.
+      operationId: createSSHCertificate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_4'
+      responses:
+        default:
+          description: Unexpected error
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /ca/certificate:
+    get:
+      tags:
+      - ca
+      summary: Returns the valid CA certificate.
+      description: Returns the valid CA certificate in PEM format.
+      operationId: getCA
+      responses:
+        default:
+          description: Unexpected error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /ca/chain:
+    get:
+      tags:
+      - ca
+      summary: Returns the valid CA certificate chain.
+      description: Returns the valid CA certificate chain in PEM format.
+      operationId: getCAChain
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /ca/generate:
+    post:
+      tags:
+      - ca
+      summary: Generates and returns an intermediate CA CSR.
+      description: Generates and returns an intermediate CA certificate signing request.
+      operationId: generateIntermediateCACSR
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_5'
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /ca/set:
+    post:
+      tags:
+      - ca
+      summary: Sets the signed intermediate CA certificate.
+      description: Sets the signed intermediate CA certificate.
+      operationId: setIntermediateCA
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_6'
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /ca/chain/set:
+    post:
+      tags:
+      - ca
+      summary: Sets the CA certificate chain.
+      description: Sets the CA certificate chain.
+      operationId: setCAChain
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_7'
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/crl:
+    get:
+      tags:
+      - crl
+      summary: Returns CRL information.
+      description: Returns the number of entries in CRL, the CRL record in an array.
+      operationId: getCRL
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_6'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/crl/purge:
+    post:
+      tags:
+      - crl
+      summary: Purges all records prior to the date provided from the CRL.
+      description: Purges all records prior to the date provided from the Certificate
+        Revocation List (CRL).
+      operationId: purgeCRL
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_8'
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+      security:
+      - DAPTokenAuth: []
+  /pki/template:
+    put:
+      tags:
+      - template
+      summary: Modify an existing template to generate or sign a certificate from.
+      description: Modify an existing template that can be used to generate or sign
+        a certificate.
+      operationId: managePKITemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PKITemplateRequest'
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+      security:
+      - DAPTokenAuth: []
+    post:
+      tags:
+      - template
+      summary: Create a template to generate or sign a certificate from.
+      description: Creates a template that can be used to generate or sign a certificate.
+      operationId: createPKITemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PKITemplateRequest'
+      responses:
+        default:
+          description: Unknown error
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/template/{templateName}:
+    get:
+      tags:
+      - template
+      summary: Returns the given template name's details.
+      description: Returns the given template name's details.
+      operationId: getPKITemplate
+      parameters:
+      - name: templateName
+        in: path
+        description: The name of the template.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_7'
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+    delete:
+      tags:
+      - template
+      summary: Deletes the template name that is given.
+      description: Matches the template name given with the database and deletes the
+        template.
+      operationId: deletePKITemplate
+      parameters:
+      - name: templateName
+        in: path
+        description: The name of the template.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /pki/templates:
+    get:
+      tags:
+      - template
+      summary: Returns all templates in an object array.
+      description: Returns all templates in an object array.
+      operationId: listPKITemplates
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_8'
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /ssh/template:
+    put:
+      tags:
+      - template
+      summary: Modify an existing template to sign a public SSH key certificate from.
+      description: Modify an existing template that can be used to sign a public SSH
+        key certificate.
+      operationId: manageSSHTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SSHTemplateRequest'
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+      security:
+      - DAPTokenAuth: []
+    post:
+      tags:
+      - template
+      summary: Create a template to sign a public SSH key certificate from.
+      description: Creates a template that can be used to sign a public SSH key certificate.
+      operationId: createSSHTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SSHTemplateRequest'
+      responses:
+        default:
+          description: Unknown error
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /ssh/template/{templateName}:
+    get:
+      tags:
+      - template
+      summary: Returns the given template name's details.
+      description: Returns the given template name's details.
+      operationId: getSSHTemplate
+      parameters:
+      - name: templateName
+        in: path
+        description: The name of the template.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_7'
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+    delete:
+      tags:
+      - template
+      summary: Deletes the template name that is given.
+      description: Matches the template name given with the database and deletes the
+        template.
+      operationId: deleteSSHTemplate
+      parameters:
+      - name: templateName
+        in: path
+        description: The name of the template.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+  /ssh/templates:
+    get:
+      tags:
+      - template
+      summary: Returns all templates in an object array.
+      description: Returns all templates in an object array.
+      operationId: listSSHTemplates
+      responses:
+        default:
+          description: Unknown error
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_8'
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - DAPTokenAuth: []
+components:
+  schemas:
+    PKITemplateRequest:
+      required:
+      - keyAlgo
+      - keyBits
+      - maxTTL
+      - storeCertificate
+      - subject
+      - templateName
+      properties:
+        templateName:
+          type: string
+        keyAlgo:
+          type: string
+        keyBits:
+          type: string
+        maxTTL:
+          type: integer
+          example: 3600
+        subject:
+          type: array
+          items:
+            $ref: '#/components/schemas/cagenerate_subject'
+        storeCertificate:
+          type: boolean
+        keyUsages:
+          type: array
+          items:
+            type: string
+        extKeyUsages:
+          type: array
+          items:
+            type: string
+        validateCNHostname:
+          type: boolean
+        permitLocalhostCN:
+          type: boolean
+        permitWildcardCN:
+          type: boolean
+        permitRootDomain:
+          type: boolean
+        permitSubdomainCN:
+          type: boolean
+        allowedCNDomains:
+          type: array
+          items:
+            type: string
+        permDNSDomains:
+          type: array
+          items:
+            type: string
+        exclDNSDomains:
+          type: array
+          items:
+            type: string
+        permIPRanges:
+          type: array
+          items:
+            type: string
+        exclIPRanges:
+          type: array
+          items:
+            type: string
+        permEmails:
+          type: array
+          items:
+            type: string
+        exclEmails:
+          type: array
+          items:
+            type: string
+        permURIDomains:
+          type: array
+          items:
+            type: string
+        exclURIDomains:
+          type: array
+          items:
+            type: string
+        policyIdentifiers:
+          type: array
+          items:
+            type: string
+    SSHTemplateRequest:
+      required:
+      - certType
+      - maxTTL
+      - templateName
+      properties:
+        templateName:
+          type: string
+        certType:
+          type: string
+        maxTTL:
+          type: integer
+          example: 3600
+        allowedHosts:
+          type: array
+          items:
+            type: string
+        allowedPrincipals:
+          type: array
+          items:
+            type: string
+        permittedCriticalOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/sshcertificatecreate_criticalOptions'
+        permittedExtensions:
+          type: array
+          items:
+            type: string
+    body:
+      properties:
+        commonName:
+          type: string
+          example: subdomain.example.com
+        templateName:
+          type: string
+        ttl:
+          type: integer
+          example: 3600
+        returnFormat:
+          type: string
+          example: pem
+    inline_response_200:
+      type: object
+      properties:
+        certificate:
+          type: string
+        privateKey:
+          type: string
+        caCertificate:
+          type: string
+        serialNumber:
+          type: string
+        leaseDuration:
+          type: string
+      example:
+        privateKey: privateKey
+        serialNumber: serialNumber
+        certificate: certificate
+        caCertificate: caCertificate
+        leaseDuration: leaseDuration
+    body_1:
+      properties:
+        commonName:
+          type: string
+          example: subdomain.example.com
+        templateName:
+          type: string
+        ttl:
+          type: integer
+          example: 3600
+        altNames:
+          type: array
+          items:
+            type: string
+        returnFormat:
+          type: string
+    inline_response_200_1:
+      type: object
+      properties:
+        certificate:
+          type: string
+      example:
+        certificate: certificate
+    inline_response_200_2:
+      type: object
+      properties:
+        serialNumber:
+          type: string
+      example:
+        serialNumber: serialNumber
+    body_2:
+      properties:
+        serialNumber:
+          type: string
+          example: 10:1e:22:6f:8a:b3:a7:3b:ae:4a:93:62:32:8e:0f:e6:6b
+        reason:
+          type: string
+          example: keyCompromise
+    body_3:
+      properties:
+        timeBuffer:
+          type: string
+    sshcertificatecreate_criticalOptions:
+      type: object
+      properties:
+        option:
+          type: string
+        value:
+          type: string
+    body_4:
+      properties:
+        templateName:
+          type: string
+        publicKey:
+          type: string
+        users:
+          type: array
+          items:
+            type: string
+        domains:
+          type: array
+          items:
+            type: string
+        ttl:
+          type: integer
+          example: 3600
+        keyId:
+          type: string
+        criticalOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/sshcertificatecreate_criticalOptions'
+        extensions:
+          type: array
+          items:
+            type: string
+    inline_response_201:
+      type: object
+      properties:
+        serialNumber:
+          type: string
+        signedCertificate:
+          type: string
+      example:
+        serialNumber: serialNumber
+        signedCertificate: signedCertificate
+    inline_response_200_3:
+      type: object
+      properties:
+        caCertificate:
+          type: string
+      example:
+        caCertificate: caCertificate
+    inline_response_200_4:
+      type: object
+      properties:
+        certBundle:
+          type: string
+      example:
+        certBundle: certBundle
+    cagenerate_subject:
+      properties:
+        organization:
+          type: string
+        orgUnit:
+          type: string
+        country:
+          type: string
+        locality:
+          type: string
+        province:
+          type: string
+        address:
+          type: string
+        postalCode:
+          type: string
+    body_5:
+      properties:
+        commonName:
+          type: string
+          example: subdomain.example.com
+        keyAlgo:
+          type: string
+          example: ECDSA
+        keyBits:
+          type: string
+          example: "4096"
+        maxTTL:
+          type: integer
+          example: 3600
+        subject:
+          type: array
+          items:
+            $ref: '#/components/schemas/cagenerate_subject'
+        altNames:
+          type: array
+          items:
+            type: string
+            example: DNS:subdomain2.example.com
+        selfSigned:
+          type: boolean
+          example: true
+    inline_response_200_5:
+      type: object
+      properties:
+        csr:
+          type: string
+        selfSignedCert:
+          type: string
+      example:
+        csr: csr
+        selfSignedCert: selfSignedCert
+    body_6:
+      properties:
+        certificate:
+          type: string
+    body_7:
+      properties:
+        certificateBundle:
+          type: string
+    inline_response_200_6:
+      type: object
+      properties:
+        count:
+          type: string
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/inline_response_200_6_records'
+      example:
+        records:
+        - extensions:
+          - extension: extension
+          - extension: extension
+          serialNumber: serialNumber
+          revocationDate: revocationDate
+        - extensions:
+          - extension: extension
+          - extension: extension
+          serialNumber: serialNumber
+          revocationDate: revocationDate
+        count: count
+    body_8:
+      properties:
+        timeBuffer:
+          type: string
+    inline_response_200_7:
+      properties:
+        templateObject:
+          type: string
+      example:
+        templateObject: templateObject
+    inline_response_200_8:
+      properties:
+        templates:
+          type: array
+          items:
+            type: string
+      example:
+        templates:
+        - templates
+        - templates
+    inline_response_200_6_extensions:
+      type: object
+      properties:
+        extension:
+          type: string
+      example:
+        extension: extension
+    inline_response_200_6_records:
+      type: object
+      properties:
+        serialNumber:
+          type: string
+        revocationDate:
+          type: string
+        extensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/inline_response_200_6_extensions'
+      example:
+        extensions:
+        - extension: extension
+        - extension: extension
+        serialNumber: serialNumber
+        revocationDate: revocationDate
+  parameters:
+    serialNumberParam:
+      name: serialNumber
+      in: path
+      description: Serial number of certificate.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    templateNameParam:
+      name: templateName
+      in: path
+      description: The name of the template.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+  securitySchemes:
+    DAPTokenAuth:
+      type: apiKey
+      name: Authorization
+      in: header

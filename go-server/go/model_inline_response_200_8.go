@@ -9,7 +9,7 @@
  */
 package swagger
 
-type Body7 struct {
+type InlineResponse2008 struct {
 
-	CertificateBundle string `json:"certificateBundle,omitempty"`
+	Templates []string `json:"templates,omitempty"`
 }

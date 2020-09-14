@@ -9,7 +9,7 @@
  */
 package swagger
 
-type Body7 struct {
+type Body8 struct {
 
-	CertificateBundle string `json:"certificateBundle,omitempty"`
+	TimeBuffer string `json:"timeBuffer,omitempty"`
 }

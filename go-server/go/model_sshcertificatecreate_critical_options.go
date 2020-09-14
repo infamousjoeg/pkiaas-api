@@ -9,7 +9,9 @@
  */
 package swagger
 
-type Body7 struct {
+type SshcertificatecreateCriticalOptions struct {
 
-	CertificateBundle string `json:"certificateBundle,omitempty"`
+	Option string `json:"option,omitempty"`
+
+	Value string `json:"value,omitempty"`
 }
