@@ -1,7 +1,7 @@
 /*
- * CyberArk PKIaaS API
+ * CyberArk Identity Service API
  *
- * API for CyberArk's Public-Key Infrastructure (PKI)-as-a-Service
+ * API for CyberArk's Identity Service
  *
  * API version: 1.0.4
  * Contact: joe.garcia@cyberark.com

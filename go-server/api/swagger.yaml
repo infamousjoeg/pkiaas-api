@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: CyberArk PKIaaS API
-  description: API for CyberArk's Public-Key Infrastructure (PKI)-as-a-Service
+  title: CyberArk Identity Service API
+  description: API for CyberArk's Identity Service
   contact:
     email: joe.garcia@cyberark.com
   license:
