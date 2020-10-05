@@ -1,9 +1,9 @@
 {
   "openapi" : "3.0.0",
   "info" : {
-    "description" : "API for CyberArk's Identity Service",
+    "description" : "API for CyberArk's Identity as a Service (IDaaS)",
     "version" : "1.0.4",
-    "title" : "CyberArk Identity Service API",
+    "title" : "CyberArk Identity as a Service API",
     "contact" : {
       "email" : "joe.garcia@cyberark.com"
     },
@@ -701,6 +701,13 @@
                 "properties" : {
                   "certificate" : {
                     "type" : "string"
+                  },
+                  "updateServices" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "example" : "subdomain.example.com"
+                    }
                   }
                 }
               }
@@ -814,44 +821,6 @@
           },
           "500" : {
             "description" : "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/pki/crl/purge" : {
-      "post" : {
-        "tags" : [ "crl" ],
-        "summary" : "Purges all records prior to the date provided from the CRL.",
-        "operationId" : "purgeCRL",
-        "description" : "Purges all records prior to the date provided from the Certificate Revocation List (CRL).",
-        "security" : [ {
-          "DAPTokenAuth" : [ ]
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "Unknown error"
-          },
-          "200" : {
-            "description" : "OK"
-          },
-          "401" : {
-            "description" : "Unauthorized"
-          },
-          "403" : {
-            "description" : "Forbidden"
-          }
-        },
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "properties" : {
-                  "timeBuffer" : {
-                    "type" : "string"
-                  }
-                }
-              }
-            }
           }
         }
       }
