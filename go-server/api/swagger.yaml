@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: CyberArk Identity Service API
-  description: API for CyberArk's Identity Service
+  title: CyberArk Identity as a Service API
+  description: API for CyberArk's Identity as a Service (IDaaS)
   contact:
     email: joe.garcia@cyberark.com
   license:
@@ -391,30 +391,6 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
-      security:
-      - DAPTokenAuth: []
-  /pki/crl/purge:
-    post:
-      tags:
-      - crl
-      summary: Purges all records prior to the date provided from the CRL.
-      description: Purges all records prior to the date provided from the Certificate
-        Revocation List (CRL).
-      operationId: purgeCRL
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_8'
-      responses:
-        default:
-          description: Unknown error
-        "200":
-          description: OK
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
       security:
       - DAPTokenAuth: []
   /pki/template:
@@ -1010,6 +986,11 @@ components:
       properties:
         certificate:
           type: string
+        updateServices:
+          type: array
+          items:
+            type: string
+            example: subdomain.example.com
     body_7:
       properties:
         certificateBundle:
@@ -1036,10 +1017,6 @@ components:
           serialNumber: serialNumber
           revocationDate: revocationDate
         count: count
-    body_8:
-      properties:
-        timeBuffer:
-          type: string
     inline_response_200_7:
       properties:
         templateObject:

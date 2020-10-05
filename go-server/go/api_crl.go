@@ -1,7 +1,7 @@
 /*
- * CyberArk Identity Service API
+ * CyberArk Identity as a Service API
  *
- * API for CyberArk's Identity Service
+ * API for CyberArk's Identity as a Service (IDaaS)
  *
  * API version: 1.0.4
  * Contact: joe.garcia@cyberark.com
@@ -14,11 +14,6 @@ import (
 )
 
 func GetCRL(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-}
-
-func PurgeCRL(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }

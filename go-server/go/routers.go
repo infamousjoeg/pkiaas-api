@@ -1,7 +1,7 @@
 /*
- * CyberArk Identity Service API
+ * CyberArk Identity as a Service API
  *
- * API for CyberArk's Identity Service
+ * API for CyberArk's Identity as a Service (IDaaS)
  *
  * API version: 1.0.4
  * Contact: joe.garcia@cyberark.com
@@ -144,13 +144,6 @@ var routes = Routes{
 		strings.ToUpper("Get"),
 		"/pki/crl",
 		GetCRL,
-	},
-
-	Route{
-		"PurgeCRL",
-		strings.ToUpper("Post"),
-		"/pki/crl/purge",
-		PurgeCRL,
 	},
 
 	Route{
